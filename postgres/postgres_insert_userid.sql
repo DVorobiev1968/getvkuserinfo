@@ -1,0 +1,10 @@
+INSERT into user_info (user_id) values ('76446111');
+INSERT into user_info (user_id) values ('76446112');
+INSERT into user_info (user_id) values ('76446113');
+INSERT into user_info (user_id) values ('76446114');
+INSERT into user_info (user_id) values ('76446115');
+INSERT into user_info (user_id) values ('76446116');
+INSERT into user_info (user_id) values ('76446117');
+INSERT into user_info (user_id) values ('76446118');
+INSERT into user_info (user_id) values ('76446119');
+INSERT into user_info (user_id) values ('764461110');

@@ -8,3 +8,7 @@ INSERT into user_info (user_id) values ('76446117');
 INSERT into user_info (user_id) values ('76446118');
 INSERT into user_info (user_id) values ('76446119');
 INSERT into user_info (user_id) values ('764461110');
+INSERT into user_info (user_id) values ('76446211');
+INSERT into user_info (user_id) values ('76546111');
+INSERT into user_info (user_id) values ('76546113');
+INSERT into user_info (user_id) values ('76546188');

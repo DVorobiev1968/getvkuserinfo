@@ -15,6 +15,7 @@ public class Conf implements EnvironmentAware {
     private String excelPathFileName;
     private String apiVersion;
     private String base_url;
+    private String fields;
 
     @Override
     public void setEnvironment(Environment environment) {
@@ -23,14 +24,19 @@ public class Conf implements EnvironmentAware {
         this.excelPathFileName = environment.getProperty("excel.filename");
         this.apiVersion=environment.getProperty("vk.api.version");
         this.base_url=environment.getProperty("vk.base_url");
+        this.fields=environment.getProperty("vk.fields");
+
     }
 
     @Override
     public String toString() {
         return "Conf{" +
                 "countThread=" + countThread +
-                ", api_key='" + access_token + '\'' +
+                ", access_token='" + access_token + '\'' +
                 ", excelPathFileName='" + excelPathFileName + '\'' +
+                ", apiVersion='" + apiVersion + '\'' +
+                ", base_url='" + base_url + '\'' +
+                ", fields='" + fields + '\'' +
                 '}';
     }
 }

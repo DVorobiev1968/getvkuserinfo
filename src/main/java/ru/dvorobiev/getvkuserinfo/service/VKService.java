@@ -6,16 +6,15 @@ import com.google.gson.JsonObject;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
+import ru.dvorobiev.getvkuserinfo.ErrorCode;
 import ru.dvorobiev.getvkuserinfo.config.Conf;
-import ru.dvorobiev.getvkuserinfo.exceptions.RequestVailException;
+import ru.dvorobiev.getvkuserinfo.entity.UserInfo;
 import ru.dvorobiev.getvkuserinfo.payload.response.UserInfoResponse;
+import ru.dvorobiev.getvkuserinfo.utils.ReportExcel;
 
 import java.util.List;
 
@@ -33,25 +32,38 @@ public class VKService {
     }
 
     public void setUrlAPI(long id) {
-        this.url = String.format("%s?user_ids=%d&access_token=%s&v=%s",
+        this.url = String.format("%s?access_token=%s&user_ids=%d&fields=%s&v=%s",
                 conf.getBase_url(),
-                id,
                 conf.getAccess_token(),
+                id,
+                conf.getFields(),
                 conf.getApiVersion());
     }
 
     public UserInfoResponse parseResponse(JsonElement jsonElement){
-        JsonObject jsonObject=jsonElement.getAsJsonObject();
-        String jsonResponse=jsonObject.get("response").toString();
-        jsonResponse=jsonResponse.replace("]","");
-        jsonResponse=jsonResponse.replace("[","");
-        Gson gson=new Gson();
-        UserInfoResponse userInfoResponse=gson.fromJson(jsonResponse,UserInfoResponse.class);
-        return userInfoResponse;
+        try {
+            JsonObject jsonObject=jsonElement.getAsJsonObject();
+            String jsonResponse=jsonObject.get("response").toString();
+            jsonResponse=jsonResponse.replace("]","");
+            jsonResponse=jsonResponse.replace("[","");
+            Gson gson=new Gson();
+            UserInfoResponse userInfoResponse=gson.fromJson(jsonResponse,UserInfoResponse.class);
+            return userInfoResponse;
+        } catch (Exception e) {
+            log.error("Error parsing response {}",e.getMessage());
+            return new UserInfoResponse();
+        }
     }
     private ExchangeFilterFunction logResponseStatus(){
         return ExchangeFilterFunction.ofResponseProcessor(clientResponse -> {
-            log.info("Response status {}",clientResponse.statusCode());
+            switch (clientResponse.statusCode().value()){
+                case 200:
+                    log.info("Response status {}",clientResponse.statusCode());
+                    break;
+                default:
+                    log.warn("An error has occurred {}",clientResponse.statusCode());
+                    break;
+            }
             return Mono.just(clientResponse);
         });
     }
@@ -84,4 +96,5 @@ public class VKService {
                 .bodyToMono(String.class);
         return response;
     }
+
 }

@@ -39,11 +39,11 @@ public class UserInfoService {
             if (userInfo != null) {
                 userInfo = userInfoFacade.userInfoResponseToUserInfo(userInfo, response);
                 userInfo = userInfoRepository.save(userInfo);
-                String errMessage = String.format("Пользователя таким ID:%d обновлен успешно", id);
+                String errMessage = String.format("User with ID:%d update success!", id);
                 LOG.info(errMessage);
                 return userInfo;
             } else {
-                String errMessage = String.format("Пользователя с таким ID:%d не существует", id);
+                String errMessage = String.format("User with ID:%d not found", id);
                 LOG.warn(errMessage);
                 return null;
             }
@@ -62,9 +62,9 @@ public class UserInfoService {
             ReportExcel reportExcel = new ReportExcel(conf.getExcelPathFileName(),nameSheet, userInfoList);
             int errno = reportExcel.createReport(conf.getExcelPathFileName());
             if (errno == ErrorCode.XLS_OK) {
-                LOG.info("Отчет {} сформирован успешно", conf.getExcelPathFileName());
+                LOG.info("Report {} created success", conf.getExcelPathFileName());
             } else {
-                LOG.error("Ошибка при формировании отчета. Код: {}", errno);
+                LOG.error("Error while generating report. Code error: {}", errno);
             }
             return errno;
         } catch (Exception e){

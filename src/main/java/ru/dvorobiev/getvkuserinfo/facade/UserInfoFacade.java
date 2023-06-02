@@ -7,29 +7,28 @@ import ru.dvorobiev.getvkuserinfo.payload.response.UserInfoResponse;
 import ru.dvorobiev.getvkuserinfo.utils.DateFormatted;
 
 import java.text.ParseException;
-import java.util.Date;
 
 @Component
 public class UserInfoFacade {
     public UserInfoDTO userInfoToUserInfoDTO(UserInfo userInfo){
         UserInfoDTO userInfoDTO=new UserInfoDTO();
-        userInfoDTO.setUser_id(userInfo.getUser_id());
-        userInfoDTO.setUser_f_name(userInfo.getUser_f_name());
-        userInfoDTO.setUser_l_name(userInfo.getUser_l_name());
-        userInfoDTO.setUser_b_date(userInfo.getUser_b_date());
-        userInfoDTO.setUser_contacts(userInfo.getUser_contacts());
+        userInfoDTO.setUserId(userInfo.getUserId());
+        userInfoDTO.setUserFirstName(userInfo.getUserFirstName());
+        userInfoDTO.setUserLastName(userInfo.getUserLastName());
+        userInfoDTO.setUserBDate(userInfo.getUserBDate());
+        userInfoDTO.setUserContacts(userInfo.getUserContacts());
         return userInfoDTO;
     }
     public UserInfo userInfoResponseToUserInfo(UserInfo userInfo, UserInfoResponse userInfoResponse) throws ParseException {
         if (userInfoResponse.getCity() !=null){
-            userInfo.setUser_city(userInfoResponse.getCity().getTitle());
+            userInfo.setUserCity(userInfoResponse.getCity().getTitle());
         } else {
-            userInfo.setUser_city("");
+            userInfo.setUserCity("");
         }
-        userInfo.setUser_contacts(userInfoResponse.getMobile_phone());
-        userInfo.setUser_f_name(userInfoResponse.getFirst_name());
-        userInfo.setUser_l_name(userInfoResponse.getLast_name());
-        userInfo.setUser_b_date(DateFormatted.perfomDate(userInfoResponse.getBdate()));
+        userInfo.setUserContacts(userInfoResponse.getMobilePhone());
+        userInfo.setUserFirstName(userInfoResponse.getFirstName());
+        userInfo.setUserLastName(userInfoResponse.getLastName());
+        userInfo.setUserBDate(DateFormatted.perfomDate(userInfoResponse.getBdate()));
         return userInfo;
     }
 }

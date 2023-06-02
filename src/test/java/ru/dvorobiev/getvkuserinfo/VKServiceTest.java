@@ -95,7 +95,7 @@ public class VKServiceTest {
     public void updateAllUsers(){
         List<UserInfo> userInfoList=userInfoService.getAll();
         for (UserInfo userInfo: userInfoList){
-            updateDB(userInfo.getUser_id());
+            updateDB(userInfo.getUserId());
         }
     }
     @Test void reporting() throws IOException {

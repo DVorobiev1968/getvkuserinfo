@@ -11,22 +11,23 @@ import java.util.Date;
 public class UserInfo {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
-    private Long user_id;
+    @Column(name="user_id")
+    private Long userId;
 
-    @Column(columnDefinition = "varchar(25)")
-    private String user_f_name;
+    @Column(name="user_f_name", columnDefinition = "varchar(25)")
+    private String userFirstName;
 
-    @Column(columnDefinition = "varchar(25)")
-    private String user_l_name;
+    @Column(name="user_l_name", columnDefinition = "varchar(25)")
+    private String userLastName;
 
-    @Column(columnDefinition = "varchar(25)")
-    private String user_city;
+    @Column(name="user_city", columnDefinition = "varchar(25)")
+    private String userCity;
 
-    @Column(columnDefinition = "varchar(15)")
-    private String user_contacts;
+    @Column(name="user_contacts",columnDefinition = "varchar(15)")
+    private String userContacts;
 
-    @Column(columnDefinition = "date")
+    @Column(name="user_b_date", columnDefinition = "date")
     @JsonFormat(pattern = "dd.mm.yyyy hh:mm:ss")
-    private Date user_b_date;
+    private Date userBDate;
 
 }

@@ -33,7 +33,7 @@ public class UserInfoService {
     }
 
     @Transactional
-    public UserInfo update(Long id, UserInfoResponse response) throws ParseException {
+    synchronized public UserInfo update(Long id, UserInfoResponse response) throws ParseException {
         UserInfo userInfo = userInfoRepository.findById(id).orElse(null);
         try {
             if (userInfo != null) {

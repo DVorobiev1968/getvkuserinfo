@@ -6,10 +6,10 @@ import java.util.Date;
 
 @Data
 public class UserInfoDTO {
-    private Long user_id;
-    private String user_f_name;
-    private String user_l_name;
-    private String user_city;
-    private String user_contacts;
-    private Date user_b_date;
+    private Long userId;
+    private String userFirstName;
+    private String userLastName;
+    private String userCity;
+    private String userContacts;
+    private Date userBDate;
 }

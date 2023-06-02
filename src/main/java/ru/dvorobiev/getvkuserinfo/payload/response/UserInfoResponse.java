@@ -9,23 +9,23 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UserInfoResponse {
     private long id;
-    private String first_name;
-    private String last_name;
+    private String firstName;
+    private String lastName;
     private String bdate;
     private City city;
-    private String mobile_phone;
-    private boolean can_access_closed;
-    private boolean is_closed;
+    private String mobilePhone;
+    private boolean canAccessClosed;
+    private boolean isClosed;
 
-    public UserInfoResponse(long id, String first_name, String last_name, String bdate, String mobile_phone, boolean can_access_closed, boolean is_closed) {
+    public UserInfoResponse(long id, String firstName, String lastName, String bdate, String mobilePhone, boolean canAccessClosed, boolean isClosed) {
         this.id = id;
-        this.first_name = first_name;
-        this.last_name = last_name;
+        this.firstName = firstName;
+        this.lastName = lastName;
         this.bdate = bdate;
         this.city = new City(0l,"");
-        this.mobile_phone = mobile_phone;
-        this.can_access_closed = can_access_closed;
-        this.is_closed = is_closed;
+        this.mobilePhone = mobilePhone;
+        this.canAccessClosed = canAccessClosed;
+        this.isClosed = isClosed;
     }
 }
 

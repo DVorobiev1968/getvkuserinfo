@@ -95,17 +95,17 @@ public class ReportExcel {
 
             row = sheet.createRow(rownum);
             cell = row.createCell(0, CellType.NUMERIC);
-            cell.setCellValue(userInfo.getUser_id());
+            cell.setCellValue(userInfo.getUserId());
             cell = row.createCell(1, CellType.STRING);
-            cell.setCellValue(userInfo.getUser_f_name());
+            cell.setCellValue(userInfo.getUserFirstName());
             cell = row.createCell(2, CellType.STRING);
-            cell.setCellValue(userInfo.getUser_l_name());
+            cell.setCellValue(userInfo.getUserLastName());
             cell = row.createCell(3, CellType.STRING);
-            cell.setCellValue(userInfo.getUser_city());
+            cell.setCellValue(userInfo.getUserCity());
             cell = row.createCell(4, CellType.STRING);
-            cell.setCellValue(userInfo.getUser_contacts());
+            cell.setCellValue(userInfo.getUserContacts());
             cell = row.createCell(5, CellType.STRING);
-            cell.setCellValue(DateFormatted.getDateString(userInfo.getUser_b_date()));
+            cell.setCellValue(DateFormatted.getDateString(userInfo.getUserBDate()));
         }
         if (rownum > 0) {
             try {

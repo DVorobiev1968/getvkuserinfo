@@ -11,6 +11,8 @@ import java.util.Date;
 public class UserInfo {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
+    private Long id;
+
     @Column(name="user_id")
     private Long userId;
 

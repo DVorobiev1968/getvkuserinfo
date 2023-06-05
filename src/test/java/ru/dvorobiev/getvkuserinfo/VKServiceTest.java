@@ -16,10 +16,15 @@ import ru.dvorobiev.getvkuserinfo.payload.response.UserInfoResponse;
 import ru.dvorobiev.getvkuserinfo.service.UserInfoService;
 import ru.dvorobiev.getvkuserinfo.service.VKService;
 import ru.dvorobiev.getvkuserinfo.utils.ReportExcel;
+import ru.dvorobiev.getvkuserinfo.entity.UserInfo;
 
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.function.Function;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -38,8 +43,8 @@ public class VKServiceTest {
 
 
     @BeforeAll
-    public static void initialize(){
-        expectedUser=new UserInfoResponse(
+    public static void initialize() {
+        expectedUser = new UserInfoResponse(
                 290530455,
                 "Dmitry",
                 "Vorobyev",
@@ -49,40 +54,43 @@ public class VKServiceTest {
                 true,
                 false);
     }
+
     @Test
     @Ignore
     public void postUserIdTest() throws InterruptedException {
-        Mono<String>userInfo=vkService.postUserInfo(expectedUser.getId());
-        JsonElement jsonElement=new JsonParser().parse(userInfo.block());
-        UserInfoResponse userInfoResponse=vkService.parseResponse(jsonElement);
+        Mono<String> userInfo = vkService.postUserInfo(expectedUser.getId());
+        JsonElement jsonElement = new JsonParser().parse(userInfo.block());
+        UserInfoResponse userInfoResponse = vkService.parseResponse(jsonElement);
         assertThat(userInfoResponse).isEqualTo(expectedUser);
     }
-    private void updateDB(Long id){
-        try{
-            Mono<String>userInfo=vkService.postUserInfo(id);
-            JsonElement jsonElement=new JsonParser().parse(userInfo.block());
-            UserInfoResponse userInfoResponse=vkService.parseResponse(jsonElement);
-            userInfoService.update(id,userInfoResponse);
+
+    private void updateDB(Long id) {
+        try {
+            Mono<String> userInfo = vkService.postUserInfo(id);
+            JsonElement jsonElement = new JsonParser().parse(userInfo.block());
+            UserInfoResponse userInfoResponse = vkService.parseResponse(jsonElement);
+            userInfoService.update(id, userInfoResponse);
         } catch (Exception e) {
-            log.error("Error update for ID: {}: {}",id, e.getMessage());
-        }
-    }
-    @Test
-    @Ignore
-    public void postUserIdWithUpdateDBTest() throws InterruptedException, ParseException {
-        try{
-            Mono<String>userInfo=vkService.postUserInfo(expectedUser.getId());
-            JsonElement jsonElement=new JsonParser().parse(userInfo.block());
-            UserInfoResponse userInfoResponse=vkService.parseResponse(jsonElement);
-            userInfoService.update(expectedUser.getId(),userInfoResponse);
-        } catch (Exception e) {
-            log.error("Error postUserIdWithUpdateDBTest: {}",e.getMessage());
+            log.error("Error update for ID: {}: {}", id, e.getMessage());
         }
     }
 
     @Test
     @Ignore
-    public void getUserIdWithErrorHandlingTest(){
+    public void postUserIdWithUpdateDBTest() throws InterruptedException, ParseException {
+        try {
+            Mono<String> userInfo = vkService.postUserInfo(expectedUser.getId());
+            JsonElement jsonElement = new JsonParser().parse(userInfo.block());
+            UserInfoResponse userInfoResponse = vkService.parseResponse(jsonElement);
+            userInfoService.update(expectedUser.getId(), userInfoResponse);
+        } catch (Exception e) {
+            log.error("Error postUserIdWithUpdateDBTest: {}", e.getMessage());
+        }
+    }
+
+    @Test
+    @Ignore
+    public void getUserIdWithErrorHandlingTest() throws InterruptedException {
         vkService.getUserInfoWithErrorHandling(expectedUser.getId())
                 .subscribe(jsonString -> {
                     JsonElement jsonElement = new JsonParser().parse(jsonString);
@@ -92,18 +100,34 @@ public class VKServiceTest {
     }
 
     @Test
-    public void updateAllUsers(){
-        List<UserInfo> userInfoList=userInfoService.getAll();
-        for (UserInfo userInfo: userInfoList){
+    public void updateAllUsers() {
+        List<UserInfo> userInfoList = userInfoService.getAll();
+        for (UserInfo userInfo : userInfoList) {
             updateDB(userInfo.getUserId());
         }
     }
-    @Test void reporting() throws IOException {
-        List<UserInfo> userInfoList=userInfoService.getAll();
-        ReportExcel reportExcel=new ReportExcel(conf.getExcelPathFileName(),"testing",userInfoList);
-        int errno=reportExcel.createReport(conf.getExcelPathFileName());
-        log.info("reporting {}",errno);
+
+    @Test
+    void reporting() throws IOException {
+        List<UserInfo> userInfoList = userInfoService.getAll();
+        ReportExcel reportExcel = new ReportExcel(conf.getExcelPathFileName(), "testing", userInfoList);
+        int errno = reportExcel.createReport(conf.getExcelPathFileName());
+        log.info("reporting {}", errno);
 
     }
 
+    private static Function<Throwable,UserInfo>handleGetUserInfoFailure=throwable->{
+        log.info("Failed add users {} !",throwable.getMessage());
+        return null;
+    };
+    @Test
+    void getRandomVKUserTest() throws ParseException, InterruptedException, ExecutionException {
+        UserInfo userInfo=vkService.getRandomVKUser().get();
+        log.info("Random user info: {}",userInfo);
+    }
+    @Test
+    void getRandomVKUserWithDBTest() throws ParseException, InterruptedException, ExecutionException {
+        UserInfo userInfo=vkService.getRandomVKUserWithSaveDB().get();
+        log.info("Random user info: {}",userInfo);
+    }
 }

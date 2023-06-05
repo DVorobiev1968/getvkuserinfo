@@ -31,10 +31,21 @@ public class UserInfoService {
         this.userInfoFacade = userInfoFacade;
         this.conf = conf;
     }
+    @Transactional
+    synchronized public UserInfo add(UserInfoResponse response) throws ParseException {
+        try{
+            UserInfo userInfo=userInfoFacade.userInfoResponseToUserInfo(response);
+            userInfo=userInfoRepository.save(userInfo);
+            return userInfo;
+        }catch (Exception e){
+            LOG.error("Error add new user ID`s: {}, {}",response.getId(), e.getMessage());
+            return null;
+        }
+    }
 
     @Transactional
     synchronized public UserInfo update(Long id, UserInfoResponse response) throws ParseException {
-        UserInfo userInfo = userInfoRepository.findById(id).orElse(null);
+        UserInfo userInfo = userInfoRepository.findUserInfoById(id).orElse(null);
         try {
             if (userInfo != null) {
                 userInfo = userInfoFacade.userInfoResponseToUserInfo(userInfo, response);
@@ -46,6 +57,27 @@ public class UserInfoService {
                 String errMessage = String.format("User with ID:%d not found", id);
                 LOG.warn(errMessage);
                 return null;
+            }
+        } catch (Exception e) {
+            LOG.error("Error update info for ID: {} {}", id, e.getMessage());
+            return null;
+        }
+    }
+    @Transactional
+    synchronized public UserInfo addWithUpdate(Long id, UserInfoResponse response) throws ParseException {
+        UserInfo userInfo = userInfoRepository.findUserInfoById(id).orElse(null);
+        try {
+            if (userInfo != null) {
+                userInfo = userInfoFacade.userInfoResponseToUserInfo(userInfo, response);
+                userInfo = userInfoRepository.save(userInfo);
+                String errMessage = String.format("User with ID:%d update success!", id);
+                LOG.info(errMessage);
+                return userInfo;
+            } else {
+                String errMessage = String.format("User with ID:%d not found, added.", id);
+                LOG.info(errMessage);
+                userInfo=add(response);
+                return userInfo;
             }
         } catch (Exception e) {
             LOG.error("Error update info for ID: {} {}", id, e.getMessage());

@@ -17,5 +17,6 @@ public class ConfTest {
     @DisplayName("getConfTest")
     public void getConfTest(){
         log.info(conf.toString());
+        log.info("Count Thread: {}",conf.getCountThread());
     }
 }

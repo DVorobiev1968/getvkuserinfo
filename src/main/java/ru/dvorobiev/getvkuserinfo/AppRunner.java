@@ -24,6 +24,7 @@ public class AppRunner implements CommandLineRunner {
         this.conf = conf;
     }
 
+
     public void threadMultiRead() throws InterruptedException {
         List<ThreadReadUserInfo> threadReadUserInfos = new ArrayList<ThreadReadUserInfo>();
         for (int i = 0; i < conf.getCountThread(); i++) {
@@ -50,10 +51,10 @@ public class AppRunner implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception, InterruptedException {
-        try {
-            threadMultiRead();
-        } catch (InterruptedException e) {
-            logger.error("Main thread was finished");
-        }
+//        try {
+//            threadMultiRead();
+//        } catch (InterruptedException e) {
+//            logger.error("Main thread was finished");
+//        }
     }
 }

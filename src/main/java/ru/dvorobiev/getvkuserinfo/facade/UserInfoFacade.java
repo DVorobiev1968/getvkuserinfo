@@ -31,4 +31,18 @@ public class UserInfoFacade {
         userInfo.setUserBDate(DateFormatted.perfomDate(userInfoResponse.getBdate()));
         return userInfo;
     }
+    public UserInfo userInfoResponseToUserInfo(UserInfoResponse userInfoResponse) throws ParseException {
+        UserInfo userInfo=new UserInfo();
+        if (userInfoResponse.getCity() !=null){
+            userInfo.setUserCity(userInfoResponse.getCity().getTitle());
+        } else {
+            userInfo.setUserCity("");
+        }
+        userInfo.setUserId(userInfoResponse.getId());
+        userInfo.setUserContacts(userInfoResponse.getMobilePhone());
+        userInfo.setUserFirstName(userInfoResponse.getFirstName());
+        userInfo.setUserLastName(userInfoResponse.getLastName());
+        userInfo.setUserBDate(DateFormatted.perfomDate(userInfoResponse.getBdate()));
+        return userInfo;
+    }
 }

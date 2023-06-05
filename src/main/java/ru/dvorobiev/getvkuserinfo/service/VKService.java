@@ -3,20 +3,23 @@ package ru.dvorobiev.getvkuserinfo.service;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
-import ru.dvorobiev.getvkuserinfo.ErrorCode;
 import ru.dvorobiev.getvkuserinfo.config.Conf;
 import ru.dvorobiev.getvkuserinfo.entity.UserInfo;
 import ru.dvorobiev.getvkuserinfo.payload.response.UserInfoResponse;
-import ru.dvorobiev.getvkuserinfo.utils.ReportExcel;
+import ru.dvorobiev.getvkuserinfo.utils.DateFormatted;
 
-import java.util.List;
+import java.text.ParseException;
+import java.util.Random;
+import java.util.concurrent.CompletableFuture;
 
 @Data
 @Service
@@ -25,13 +28,43 @@ public class VKService {
     private final Conf conf;
     private final WebClient webClient;
     private String url;
+    private UserInfoService userInfoService;
 
-    public VKService(Conf conf, WebClient webClient) {
+    public VKService(Conf conf, WebClient webClient, UserInfoService userInfoService) {
         this.conf = conf;
         this.webClient = webClient;
+        this.userInfoService=userInfoService;
     }
 
-    public void setUrlAPI(long id) {
+    @Async
+    public CompletableFuture<UserInfo>getRandomVKUserWithSaveDB() throws InterruptedException, ParseException {
+        final long start=System.currentTimeMillis();
+        long randomNumber= DateFormatted.getRandomNumber(conf.getStartRandomUserId().intValue(),
+                conf.getStartRandomUserId().intValue()*10);
+        Mono<String>userInfo=postUserInfo(randomNumber);
+        JsonElement jsonElement=new JsonParser().parse(userInfo.block());
+        UserInfoResponse userInfoResponse=parseResponse(jsonElement);
+
+        UserInfo user=userInfoService.addWithUpdate(randomNumber,userInfoResponse);
+        log.info("Save VK user ID`s: {}({}) info (elapsed time: {})",randomNumber,
+                user.getUserId(),
+                (System.currentTimeMillis()-start));
+        return CompletableFuture.completedFuture(user);
+    }
+
+    @Async
+    public CompletableFuture<UserInfo> getRandomVKUser() throws InterruptedException, ParseException {
+        final long start=System.currentTimeMillis();
+        long randomNumber= DateFormatted.getRandomNumber(conf.getStartRandomUserId().intValue(),
+                conf.getStartRandomUserId().intValue()*10);
+        Mono<String>userInfo=postUserInfo(randomNumber);
+        JsonElement jsonElement=new JsonParser().parse(userInfo.block());
+        UserInfoResponse userInfoResponse=parseResponse(jsonElement);
+        UserInfo user=userInfoService.add(userInfoResponse);
+        log.info("Save VK user info (elapsed time: {})",(System.currentTimeMillis()-start));
+        return CompletableFuture.completedFuture(user);
+    }
+    private void setUrlAPI(long id) {
         this.url = String.format("%s?access_token=%s&user_ids=%d&fields=%s&v=%s",
                 conf.getBase_url(),
                 conf.getAccess_token(),
@@ -51,7 +84,9 @@ public class VKService {
             return userInfoResponse;
         } catch (Exception e) {
             log.error("Error parsing response {}",e.getMessage());
-            return new UserInfoResponse();
+            UserInfoResponse infoResponse=new UserInfoResponse();
+            log.info("Info user: {}", infoResponse);
+            return infoResponse;
         }
     }
     private ExchangeFilterFunction logResponseStatus(){
@@ -68,7 +103,7 @@ public class VKService {
         });
     }
 
-    public Mono<String> postUserInfo(final Long id){
+    public Mono<String> postUserInfo(Long id) throws InterruptedException {
         setUrlAPI(id);
         Mono<String> response = WebClient
                 .builder()
@@ -78,10 +113,11 @@ public class VKService {
                 .uri(this.url)
                 .retrieve()
                 .bodyToMono(String.class);
+        Thread.sleep(1000);
         return response;
     }
 
-    public Mono<String> getUserInfoWithErrorHandling(final Long id){
+    public Mono<String> getUserInfoWithErrorHandling(long id) throws InterruptedException {
         setUrlAPI(id);
         Mono<String> response=WebClient
                 .builder()
@@ -94,7 +130,7 @@ public class VKService {
                 .onStatus(HttpStatus.SERVICE_UNAVAILABLE::equals,
                         error -> Mono.error(new RuntimeException("Server is not responding")))
                 .bodyToMono(String.class);
+        Thread.sleep(1000);
         return response;
     }
-
 }

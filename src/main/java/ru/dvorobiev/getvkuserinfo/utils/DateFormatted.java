@@ -17,7 +17,7 @@ public class DateFormatted {
         String dateStr;
         String pattern;
 
-        try{
+        try {
             SimpleDateFormat simpleDateFormat;
             Locale locale = new Locale("ru", "RU");
             DateFormatSymbols dateFormatSymbols = new DateFormatSymbols(locale);
@@ -37,19 +37,26 @@ public class DateFormatted {
             simpleDateFormat = new SimpleDateFormat(pattern, dateFormatSymbols);
             dateStr = simpleDateFormat.format(date);
             return dateStr;
-        } catch (Exception e){
+        } catch (Exception e) {
             return new String("01/01/1900");
         }
     }
 
     public Date perfomDate(String value) throws ParseException {
         try {
-            value=(value == null)? "01.01.1900":value;
-            Date date=new SimpleDateFormat("d.MM.yyyy").parse(value);
+            value = (value == null) ? "01.01.1900" : value;
+            value= (value.length() < 6) ? value+".1900":value;
+            Date date = new SimpleDateFormat("d.MM.yyyy").parse(value);
             return date;
         } catch (Exception e) {
-            log.error("Error perfom data {}",e.getMessage());
+            log.error("Error perfom data {}", e.getMessage());
             return null;
         }
+    }
+
+    static public long getRandomNumber(int min, int max) {
+        double value = Math.floor(Math.random() * (max - min) + min);
+        long result = Double.valueOf(value).longValue();
+        return result;
     }
 }

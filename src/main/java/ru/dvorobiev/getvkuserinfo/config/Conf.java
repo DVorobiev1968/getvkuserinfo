@@ -16,6 +16,7 @@ public class Conf implements EnvironmentAware {
     private String apiVersion;
     private String base_url;
     private String fields;
+    private Long startRandomUserId;
 
     @Override
     public void setEnvironment(Environment environment) {
@@ -25,6 +26,7 @@ public class Conf implements EnvironmentAware {
         this.apiVersion=environment.getProperty("vk.api.version");
         this.base_url=environment.getProperty("vk.base_url");
         this.fields=environment.getProperty("vk.fields");
+        this.startRandomUserId=Long.parseLong(environment.getProperty("vk.startRandomUserId"));
 
     }
 

@@ -124,7 +124,7 @@ public class ThreadTests {
             Runnable worker=new ReadVKUserInfo(String.format("worker-%d",i),vkService);
             executorService.execute(worker);
         }
-        Thread.sleep(10000);
+        Thread.sleep(30000);
         executorService.shutdown();
         log.info("Test elapsed time: {}",(System.currentTimeMillis()-start));
     }

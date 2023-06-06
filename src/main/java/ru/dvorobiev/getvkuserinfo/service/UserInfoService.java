@@ -77,6 +77,7 @@ public class UserInfoService {
                 String errMessage = String.format("User with ID:%d not found, added.", id);
                 LOG.info(errMessage);
                 userInfo=add(response);
+                LOG.info("Added success: {}",userInfo);
                 return userInfo;
             }
         } catch (Exception e) {

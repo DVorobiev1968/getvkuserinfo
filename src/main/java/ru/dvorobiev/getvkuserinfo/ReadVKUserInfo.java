@@ -25,8 +25,9 @@ public class ReadVKUserInfo implements Runnable {
         try {
             errMessage = String.format("Thread %s running.", nameThread);
             log.info(errMessage);
-            UserInfo userInfo=vkService.getRandomVKUserWithSaveDB().get();
-            errMessage = String.format("Thread %s canceled! UserInfo: %s", nameThread,userInfo.toString());
+//            UserInfo userInfo=vkService.getRandomVKUserWithSaveDB().get();
+//            errMessage = String.format("Thread %s canceled! UserInfo: %s", nameThread,userInfo.toString());
+            errMessage = String.format("Thread %s canceled!", nameThread);
             log.info(errMessage);
         } catch (Exception e){
             log.error("Run thread {}, Error: {}",nameThread, e.getMessage());

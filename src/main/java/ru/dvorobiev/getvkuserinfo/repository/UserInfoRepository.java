@@ -1,15 +1,14 @@
 package ru.dvorobiev.getvkuserinfo.repository;
 
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.r2dbc.repository.R2dbcRepository;
 import org.springframework.stereotype.Repository;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 import ru.dvorobiev.getvkuserinfo.entity.UserInfo;
 
-import java.util.Optional;
-
 @Repository
-public interface UserInfoRepository extends JpaRepository<UserInfo, Long> {
-    @Override
-    Optional<UserInfo> findById(Long id);
-
-    Optional<UserInfo>findUserInfoById(Long id);
+public interface UserInfoRepository extends R2dbcRepository<UserInfo, Long> {
+    Mono<UserInfo> findById(Long id);
+    Mono<UserInfo> findUserInfoById(Long id);
+    Flux<UserInfo> findAll();
 }

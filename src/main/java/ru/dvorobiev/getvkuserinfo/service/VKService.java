@@ -36,34 +36,34 @@ public class VKService {
         this.userInfoService=userInfoService;
     }
 
-    @Async
-    public CompletableFuture<UserInfo>getRandomVKUserWithSaveDB() throws InterruptedException, ParseException {
-        final long start=System.currentTimeMillis();
-        long randomNumber= DateFormatted.getRandomNumber(conf.getStartRandomUserId().intValue(),
-                conf.getStartRandomUserId().intValue()*10);
-        Mono<String>userInfo=postUserInfo(randomNumber);
-        JsonElement jsonElement=new JsonParser().parse(userInfo.block());
-        UserInfoResponse userInfoResponse=parseResponse(jsonElement);
+//    @Async
+//    public CompletableFuture<UserInfo>getRandomVKUserWithSaveDB() throws InterruptedException, ParseException {
+//        final long start=System.currentTimeMillis();
+//        long randomNumber= DateFormatted.getRandomNumber(conf.getStartRandomUserId().intValue(),
+//                conf.getStartRandomUserId().intValue()*10);
+//        Mono<String>userInfo=postUserInfo(randomNumber);
+//        JsonElement jsonElement=new JsonParser().parse(userInfo.block());
+//        UserInfoResponse userInfoResponse=parseResponse(jsonElement);
+//
+//        UserInfo user=userInfoService.addWithUpdate(randomNumber,userInfoResponse);
+//        log.info("Save VK user ID`s: {}({}) info (elapsed time: {})",randomNumber,
+//                user.getUserId(),
+//                (System.currentTimeMillis()-start));
+//        return CompletableFuture.completedFuture(user);
+//    }
 
-        UserInfo user=userInfoService.addWithUpdate(randomNumber,userInfoResponse);
-        log.info("Save VK user ID`s: {}({}) info (elapsed time: {})",randomNumber,
-                user.getUserId(),
-                (System.currentTimeMillis()-start));
-        return CompletableFuture.completedFuture(user);
-    }
-
-    @Async
-    public CompletableFuture<UserInfo> getRandomVKUser() throws InterruptedException, ParseException {
-        final long start=System.currentTimeMillis();
-        long randomNumber= DateFormatted.getRandomNumber(conf.getStartRandomUserId().intValue(),
-                conf.getStartRandomUserId().intValue()*10);
-        Mono<String>userInfo=postUserInfo(randomNumber);
-        JsonElement jsonElement=new JsonParser().parse(userInfo.block());
-        UserInfoResponse userInfoResponse=parseResponse(jsonElement);
-        UserInfo user=userInfoService.add(userInfoResponse);
-        log.info("Save VK user info (elapsed time: {})",(System.currentTimeMillis()-start));
-        return CompletableFuture.completedFuture(user);
-    }
+//    @Async
+//    public CompletableFuture<UserInfo> getRandomVKUser() throws InterruptedException, ParseException {
+//        final long start=System.currentTimeMillis();
+//        long randomNumber= DateFormatted.getRandomNumber(conf.getStartRandomUserId().intValue(),
+//                conf.getStartRandomUserId().intValue()*10);
+//        Mono<String>userInfo=postUserInfo(randomNumber);
+//        JsonElement jsonElement=new JsonParser().parse(userInfo.block());
+//        UserInfoResponse userInfoResponse=parseResponse(jsonElement);
+//        UserInfo user=userInfoService.add(userInfoResponse);
+//        log.info("Save VK user info (elapsed time: {})",(System.currentTimeMillis()-start));
+//        return CompletableFuture.completedFuture(user);
+//    }
     private void setUrlAPI(long id) {
         this.url = String.format("%s?access_token=%s&user_ids=%d&fields=%s&v=%s",
                 conf.getBase_url(),
@@ -72,23 +72,23 @@ public class VKService {
                 conf.getFields(),
                 conf.getApiVersion());
     }
-
-    public UserInfoResponse parseResponse(JsonElement jsonElement){
-        try {
-            JsonObject jsonObject=jsonElement.getAsJsonObject();
-            String jsonResponse=jsonObject.get("response").toString();
-            jsonResponse=jsonResponse.replace("]","");
-            jsonResponse=jsonResponse.replace("[","");
-            Gson gson=new Gson();
-            UserInfoResponse userInfoResponse=gson.fromJson(jsonResponse,UserInfoResponse.class);
-            return userInfoResponse;
-        } catch (Exception e) {
-            log.error("Error parsing response {}",e.getMessage());
-            UserInfoResponse infoResponse=new UserInfoResponse();
-            log.info("Info user: {}", infoResponse);
-            return infoResponse;
-        }
-    }
+//
+//    public UserInfoResponse parseResponse(JsonElement jsonElement){
+//        try {
+//            JsonObject jsonObject=jsonElement.getAsJsonObject();
+//            String jsonResponse=jsonObject.get("response").toString();
+//            jsonResponse=jsonResponse.replace("]","");
+//            jsonResponse=jsonResponse.replace("[","");
+//            Gson gson=new Gson();
+//            UserInfoResponse userInfoResponse=gson.fromJson(jsonResponse,UserInfoResponse.class);
+//            return userInfoResponse;
+//        } catch (Exception e) {
+//            log.error("Error parsing response {}",e.getMessage());
+//            UserInfoResponse infoResponse=new UserInfoResponse();
+//            log.info("Info user: {}", infoResponse);
+//            return infoResponse;
+//        }
+//    }
     private ExchangeFilterFunction logResponseStatus(){
         return ExchangeFilterFunction.ofResponseProcessor(clientResponse -> {
             switch (clientResponse.statusCode().value()){

@@ -58,7 +58,7 @@ public class ThreadTests {
                 try {
                     errMessage = String.format("Thread %s running.", nameThread);
                     log.info(errMessage);
-                    vkService.getRandomVKUserWithSaveDB();
+//                    vkService.getRandomVKUserWithSaveDB();
                     errMessage = String.format("Thread %s canceled!", nameThread);
                     log.info(errMessage);
                 } catch (Exception e){
@@ -92,7 +92,7 @@ public class ThreadTests {
                 try {
                     errMessage = String.format("Thread %s running.", nameThread);
                     log.info(errMessage);
-                    vkService.getRandomVKUserWithSaveDB();
+//                    vkService.getRandomVKUserWithSaveDB();
                     errMessage = String.format("Thread %s canceled!", nameThread);
                     log.info(errMessage);
                 } catch (Exception e){

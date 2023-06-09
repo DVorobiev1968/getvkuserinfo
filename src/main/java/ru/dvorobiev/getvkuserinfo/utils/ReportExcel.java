@@ -105,7 +105,7 @@ public class ReportExcel {
             cell = row.createCell(4, CellType.STRING);
             cell.setCellValue(userInfo.getUserContacts());
             cell = row.createCell(5, CellType.STRING);
-            cell.setCellValue(DateFormatted.getDateString(userInfo.getUserBDate()));
+//            cell.setCellValue(DateFormatted.getDateString(userInfo.getUserBDate()));
         }
         if (rownum > 0) {
             try {

@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @Data
@@ -23,7 +24,10 @@ public class UserInfo {
     private String userLastName;
     private String userCity;
     private String userContacts;
-    @JsonFormat(pattern = "dd.mm.yyyy hh:mm:ss")
-    private Date userBDate;
+    @JsonFormat(
+            shape = JsonFormat.Shape.STRING,
+            pattern = "dd-MM-yyyy",
+            timezone = "+0500")
+    private LocalDate userBDate;
 
 }

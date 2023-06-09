@@ -5,9 +5,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import ru.dvorobiev.getvkuserinfo.DTO.UserInfoDTO;
 import ru.dvorobiev.getvkuserinfo.ErrorCode;
 import ru.dvorobiev.getvkuserinfo.config.Conf;
 import ru.dvorobiev.getvkuserinfo.entity.UserInfo;
+import ru.dvorobiev.getvkuserinfo.mapper.UserMapper;
 import ru.dvorobiev.getvkuserinfo.repository.UserInfoRepository;
 
 import java.io.IOException;
@@ -19,6 +21,7 @@ import java.text.ParseException;
 public class UserInfoService {
     private final UserInfoRepository userInfoRepository;
     private final Conf conf;
+    private final UserMapper userMapper;
 
 
     public Mono<UserInfo> add(UserInfo userInfo){
@@ -40,7 +43,15 @@ public class UserInfoService {
     }
 
     public Flux<UserInfo> getAll() {
-        return userInfoRepository.findAll();
+        return userInfoRepository
+                .findAll();
+
+    }
+    public Flux<UserInfoDTO> getAllDTO() {
+        return userInfoRepository
+                .findAll()
+                .map(userMapper::map);
+
     }
 
     public int reporting(String nameSheet) throws IOException {
@@ -50,9 +61,9 @@ public class UserInfoService {
                 (data) -> {
                     log.info("reporting of: {}", data);
                 },
-                (err)-> log.error("error"+err),
-                ()->log.info("cancel"))
-            .dispose();
+                (err)-> log.error("error: "+err),
+                ()->log.info("cancel"));
+
 //            ReportExcel reportExcel = new ReportExcel(conf.getExcelPathFileName(),nameSheet, userInfoList);
 //            int errno = reportExcel.createReport(conf.getExcelPathFileName());
 //            if (errno == ErrorCode.XLS_OK) {
